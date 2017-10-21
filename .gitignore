@@ -1,0 +1,6 @@
+workspaces/keys/*
+workspaces/pass
+plan
+*.retry
+*.swp
+*.swo

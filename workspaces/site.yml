@@ -1,0 +1,113 @@
+---
+- hosts: localhost
+  vars:
+    api_token: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          39306639323664636436326461613633393962383061313263653763326137656335373431623063
+          6337633538313139333137383162386336363138633664350a356262656664373335333866613838
+          31313731643832316139353661393764353739333837396537313134323437356361623934633366
+          3133633930366536390a396331306266306538623539313138616664616262383332333461336138
+          62393136376136333039656335636236616235326133373062643762373134646632343130666235
+          65313032626437313462353931333836366366343966306230353166333134386165663630373734
+          38663964653438613239613366383761383337336430393833623963383233303234663861636131
+          38363339633931616466
+
+    do_state: "{{ go | default('present') }}"
+    suffixes:
+      - docker
+  tasks:
+    - name: Register SSH keys and droplet prefix names
+      find:
+        paths: "{{ playbook_dir }}/keys"
+        patterns: "*.pub"
+      delegate_to: localhost
+      register: droplets
+
+    - name: Check if SSH keys are in OpenSSH format
+      command: "ssh-keygen -l -f {{ item.path }}"
+      with_items: "{{ droplets.files }}"
+      delegate_to: localhost
+
+    - name: register ssh keys in Digital Ocean
+      digital_ocean:
+        state: "present"
+        command: ssh
+        name: "{{ item.path|basename|splitext|first }}"
+        ssh_pub_key: "{{ lookup('file', '{{ item.path }}') }}"
+        api_token: "{{ api_token }}"
+      with_items: "{{ droplets.files }}"
+      register: ssh_keys
+      ignore_errors: true
+         
+    - name: manage droplets
+      digital_ocean:
+        state: "{{ do_state }}"
+        wait: "{{ 'no' if do_state == 'absent' else 'yes' }}"
+        command: droplet
+        name: "{{ item.0.ssh_key.name }}-{{ item.1 }}"
+        unique_name: yes
+        size_id: 1gb
+        region_id: fra1
+        image_id: ubuntu-16-04-x64
+        ssh_key_ids:
+          - "ca:e8:d7:0b:d0:d6:2c:1f:f9:ff:7b:3d:d8:db:9d:f5"
+          - "{{ item.0.ssh_key.fingerprint }}"
+        api_token: "{{ api_token }}"
+      with_nested: 
+        - "{{ ssh_keys.results }}"
+        - "{{ suffixes }}"
+      register: droplet_details
+
+    - name: Add hosts to inventory
+      add_host:
+        name: "{{ item.droplet.ip_address }}"
+        groups: "{{ item.droplet.name }}"
+      with_items: "{{ droplet_details.results }}"
+      when: do_state != "absent"
+
+    - name: Create inventory
+      template:
+        dest: "{{ playbook_dir }}/INVENTORY"
+        src: inventory.j2
+      when: do_state != "absent"
+
+    - name: remove SSH keys from Digital Ocean account
+      digital_ocean:
+        state: "absent"
+        command: ssh
+        name: "{{ item.path|basename|splitext|first }}"
+        api_token: "{{ api_token }}"
+      with_items: "{{ droplets.files }}"
+      when: do_state == "absent"
+    
+    - name: remove inventory file
+      file:
+        dest: "{{ playbook_dir }}/INVENTORY"
+        state: absent
+      when: do_state == "absent"
+
+    - name: exit
+      fail:
+        msg: "All OK. Exiting..."
+      when: do_state == "absent"
+
+- hosts: all:!localhost
+  gather_facts: no
+  vars:
+    ansible_ssh_user: root
+  tasks:
+    - name: Install python
+      raw: "apt update; apt install python -y"
+
+- hosts: all:!localhost
+  vars:
+    docker_monitoring: false
+    ansible_ssh_user: root
+# SoInteractive.docker,0.9.0
+  roles:
+    - SoInteractive.docker
+  tasks:
+    - name: Copy app
+      copy:
+        src: app.tgz
+        dest: /root/app.tgz

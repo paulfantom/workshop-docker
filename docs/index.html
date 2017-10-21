@@ -1,0 +1,498 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Docker Essentials Workshop</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/css/reveal.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/css/print/pdf.css' : 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+
+    <link rel="stylesheet" href="css/theme/soi.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/lib/css/zenburn.css">
+
+  </head>
+  <body>
+<!--  <div class="ans-mark">
+    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-449 450 125 125" style="enable-background:new -449 450 125 125;" xml:space="preserve">
+      <g id="XMLID_3_">
+        <circle id="XMLID_7_" class="circle" cx="-386.5" cy="512.5" r="62"/>
+        <path id="XMLID_4_" class="a-mark" d="M-356.9,537.1l-24.7-59.4c-0.7-1.7-2.1-2.6-3.9-2.6c-1.7,0-3.2,0.9-4,2.6l-27.1,65.2h9.2 l10.7-26.9l32,25.9c1.3,1,2.2,1.5,3.4,1.5c2.4,0,4.6-1.8,4.6-4.5C-356.5,538.5-356.6,537.8-356.9,537.1z M-385.4,488.4l16.1,39.6 l-24.2-19L-385.4,488.4z"/>
+      </g>
+    </svg>
+</div>-->
+  <div class="ans-mark">
+    <img src="images/docker-logo.png" width="100">
+  </div>
+  <div class="soi">
+    <img src="images/soi.png" width="200">
+  </div>
+    <div class="reveal">
+      <div class="slides">
+        <section data-state="cover">
+          <p class="ans-logo"><img src="images/docker-logo-full.png" width="300" alt="" /></p>
+          <h1>Docker Essentials Workshop</h1>
+          <p>Pawel Krupa, Lead DevOps Engineer</p>
+          <p>SoInteractive</p-->
+        </section>
+        <section>
+          <h2>What You Will Learn</h2>
+          <p>Docker is the world’s leading software container platform. Developers use Docker to eliminate “works on my machine” problems while operators use Docker to run and manage apps side-by-side in isolated containers to get better compute density<br><br></p>
+          <ul>
+            <li>What is Docker and Docker Mission</li>
+            <li>Installing Docker</li>
+            <li>How Docker works</li>
+            <li>Basic Docker client commands</li>
+            <li>How Docker uses linux networking concepts</li>
+            <li>What is Dockerfile</li>
+          </ul>
+        </section>
+        <section>
+          <h2>What is a container?</h2>
+	  <p>Containers are a <b>way to package software</b> in a format that can run isolated on a shared operating system.</b>
+          <p><b>Containers do not bundle a full operating system</b> - only libraries and settings required to make the software work are needed.</p>
+	  <p>This makes for <b>efficient, lightweight, self-contained</b> systems and guarantees that software will always run the same, regardless of where it’s deployed.</p>
+          <aside class="notes speaker">
+            <p>Docker is a contenerization software:
+              <ul>
+		<li>Containers are a way to package applications</li>
+                <li>Containers are not VMs</li>
+                <li>Containers have everything bundled</li>
+              </ul>
+            </p>
+          </aside>
+        </section>
+        <section>
+            <h2>Container advantages</h2>
+            <div style="font-size: 0.75em;"><br>
+            <p class="fragment fade-up"><strong>FAST</strong> – start containers in seconds</br>
+	    With Copy-on-Write model, making changes to contenerized application can take minutes</p>
+            <p class="fragment fade-up"><strong>EFFICIENT</strong> – pack as many containers as possible</br>
+            Removing overhead of the hypervisor means containers are highly performant</p>
+            <p class="fragment fade-up"><strong>SEGREGATION OF DUTIES</strong> – Dev code, Ops manage</br>
+            Docker is designed to enhance consistency by ensuring the development environment matches production one</p>
+            <p class="fragment fade-up"><strong>SOA AND MICROSERVICES</strong> – one container, one app</br>
+            Docker recommends running one process per container. This promotes a distributed application model with inter-connected containers.</p>
+            </div>
+            <aside class="notes">
+            </aside>
+        </section>
+        <section>
+          <h2>Docker Mission</h2>
+          <div style="font-size: 0.75em; text-align:center;">
+          <img src="images/app-modernization.png" width="80%" height="80%" style="padding-top: 20px;"/>
+          </div>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <h2>Use Cases</h2>
+	  <div class="columns">
+            <div class="col fragment fade-up">
+	      <p><b>Modernize Traditional Apps</b></p>
+	      <ul>
+		      <li>security</li>
+		      <li>portability</li>
+		      <li>cost savings</li>
+	      </ul>
+            </div>
+            <div class="col fragment fade-up">
+	      <p><b>CI/CD</b></p>
+	      <ul>
+		      <li>accelerate</li>
+		      <li>integrate</li>
+		      <li>automate</li>
+	      </ul>
+            </div>
+          </div>
+	  <div class="columns">
+            <div class="col fragment fade-up">
+	      <p><b>Microservices</b></p>
+	      <ul>
+		      <li>empower</li>
+		      <li>innovate</li>
+		      <li>standardize</li>
+	      </ul>
+            </div>
+            <div class="col fragment fade-up">
+	      <p><b>IT Infrastructure Optimization</b></p>
+	      <ul>
+		      <li>consolidate</li>
+		      <li>efficiency</li>
+		      <li>optimize</li>
+	      </ul>
+            </div>
+          </div>
+
+      <aside class="notes">
+      <p>https://www.docker.com/use-cases</p>
+      </aside>
+    </section>
+    <section>
+      <h2>Installing Docker CE on Ubuntu</h2>
+      <pre><code>
+# you will need the GPG repo key
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+# next you need to add repository
+$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+# finally you refresh apt cache and install docker community edition
+$ sudo apt-get update
+$ sudo apt-get install docker-ce
+      </code></pre>
+	  <p>Everything in detail is explained at <strong>docs.docker.com/engine/installation</strong></p>
+      <aside class="notes">
+      </aside>
+    </section>
+    <section>
+        <h2>Terminology</h2>
+        <div style="font-size: 0.75em;"><br>
+        <p><strong>IMAGE</strong></br>
+          Lightweight, stand-alone, executable package that includes everything needed to run a piece of software, including the code, a runtime, libraries, environment variables, and config files</p>
+        <p><strong>CONTAINER</strong></br>
+          Runtime instance of an image - what the image becomes in memory when actually executed. It runs completely isolated from the host environment by default, only accessing host files and ports if configured to do so.</p>
+        <p><strong>REGISTRY</strong></br>
+          Stateless, highly scalable server side application that stores and lets you distribute Docker images</p>
+	    <p><strong>Docker daemon</strong></br>
+	  The background service running on the host that manages building, running and distributing Docker containers.</p>
+	    <p><strong>Docker client</strong></br>
+	  The command line tool that allows the user to interact with the Docker daemon.</p>
+      </div>
+      <aside class="notes">
+      </aside>
+    </section>
+    <section>
+      <h2>Start a container!</h2>
+      <pre><code>
+# To simply start a container just use docker run
+$ docker run hello-world
+
+# Containers can also be started in detached mode
+$ docker run -d -p 80:80 dockersamples/static-site
+
+# Also we can start a shell in a container
+$ docker run -it centos:7
+      </code></pre>
+      <aside class="notes">
+      </aside>
+    </section>
+    <section>
+      <h2>How Docker Works</h2>
+      <img src="images/docker-architecture.svg" width="100%" height="80%"/>
+      <aside class="notes">
+      </aside>
+    </section>
+    <section>
+	  <h2>Docker Run</h2>
+	  <p>What happens when <b>"docker run"</b> is executed?</p>
+	  <div style="font-size: 0.75em;"><br>
+	  <p class="fragment fade-up">1. The <u>Docker client</u> contacts the <u>Docker daemon</u>.</p>
+	  <p class="fragment fade-up">2. The <u>Docker daemon</u> checks local store if the image is available locally, and if not, dowloads it from remote registry.</p>
+	  <p class="fragment fade-up">3. The <u>Docker daemon</u> creates the container and then runs a command in that container.</p>
+	  <p class="fragment fade-up">4. The <u>Docker daemon</u> streams the output of the command to the <u>Docker client</u>.</p>
+	  </div>
+	</section>
+        <section>
+          <section data-state="title alt">
+            <h1>Demo Time: <br/>Docker Client</h1>
+            <aside class="notes">
+            </aside>
+          </section>
+          <section data-state="title alt">
+            <h1>Workshop: <br/>Start some containers</h1>
+            <aside class="notes">
+            </aside>
+          </section>
+        </section>
+       	<section>
+          <h2>Docker client CLI</h2>
+          <div class="columns" style="font-size: 0.75em;">
+	    <div class="col">
+              <p><u>Commands</u></p>
+	      <pre><code>
+  attach      Attach local standard input, output, and error streams to a running container
+  build       Build an image from a Dockerfile
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  events      Get real time events from the server
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  images      List images
+  import      Import the contents from a tarball to create a filesystem image
+  info        Display system-wide information
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  ps          List containers
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  run         Run a command in a new container
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  search      Search the Docker Hub for images
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  version     Show the Docker version information
+  wait        Block until one or more containers stop, then print their exit codes
+              </code></pre>
+            </div>
+	    <div class="col">
+            </div>
+            <div class="col fragment fade-left">
+	      <p><u>Management Commands</u></p>
+                <pre><code>
+  config      Manage Docker configs
+  container   Manage containers
+  image       Manage images
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  volume      Manage volumes
+              </code></pre>
+            </div>
+          </div>
+          <p>Full documentation at <strong>docs.docker.com/engine/reference/commandline/cli</strong></p>
+          <aside class="notes">
+          </aside>
+	</section>
+        <section>
+          <section data-state="title alt">
+            <h1>Demo Time: <br/>Docker Command-line</h1>
+            <aside class="notes">
+            </aside>
+          </section>
+          <section data-state="title alt">
+            <h1>Workshop: <br/>Get to know with Docker CLI</h1>
+            <aside class="notes">
+              <p>docker pull</p>
+              <p>docker images</p>
+              <p>docker ps</p>
+              <p>docker inspect</p>
+            </aside>
+          </section>
+        </section>
+ 	<section>
+	  <h2>Networks</h2>
+	  <img src="images/docker-network.png" width="100%" height="100%"/>
+	</section>
+        <section>
+          <h2>Docker network types</h2>
+          <p class="fragment fade-up"><strong>NONE</strong></br>
+          Container doesn't have any network connection. Useful for running one-time jobs.</p>
+          <p class="fragment fade-up"><strong>HOST</strong></br>
+          Container is directly connected to host NIC.</p>
+          <p class="fragment fade-up"><strong>BRIDGE</strong></br>
+          Default network connection. Access to container is done with NAT and PAT (via iptables).</p>
+	  <p class="fragment fade-up"><strong>OVERLAY</strong></br>
+	  Used in docker swarm mode to inter-connect multiple docker daemons. Based on VXLAN technology.</p>
+          <aside class="notes">
+            <p>https://github.com/docker/labs/tree/master/networking</p>
+          </aside>
+        </section>
+        <section>
+          <h2>Bridge network</h2>
+          <img src="images/docker-bridge.png" width="50%" height="50%" style="margin:0px auto;display:block"/>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <h2>Overlay network</h2>
+          <img src="images/docker-overlay.png" width="100%" height="100%"/>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <section data-state="title alt">
+            <h1>Demo Time: <br/>Docker Network</h1>
+            <aside class="notes">
+            <p>docker network</p>
+            <p>docker network inspect bridge</p>
+            <p>run ehazlett/docker-demo:latest with port mapping 80:8080</p>
+            </aside>
+          </section>
+          <section data-state="title alt">
+            <h1>Workshop: <br/>Let's map some ports</h1>
+            <aside class="notes">
+            <p>run ehazlett/docker-demo:latest with port mapping ????:8080</p>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <h2>Dockerfile</h2>
+	  <p>Docker can build images automatically by reading the instructions from a Dockerfile. A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image.<br></p>
+	  <img src="images/dockerfile.jpg" width="30%" height="30%" style="margin:0px auto;display:block"/>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <h2>Dockerfile directives</h2>
+          <div class="columns">
+	    <div class="col">
+          <p><b>ON BUILD</b></p>
+	      <ul>
+	        <li>FROM</li>
+	        <li>COPY</li>
+	        <li>ADD</li>
+	        <li>RUN</li>
+	        <li>ONBUILD</li>
+	        <li>SHELL</li>
+	        <li>ARG</li>
+	      </ul>     
+	    </div>
+	    <div class="col">
+	      <p><b>BOTH</b></p>
+	      <ul>
+	        <li>ENV</li>
+	        <li>WORKDIR</li>
+	        <li>USER</li>
+	        <li>LABEL</li>
+	      </ul>
+	    </div>
+	    <div class="col">
+          <p><b>RUNTIME</b></p>
+	      <ul>
+            <li>CMD</li>
+            <li>ENTRYPOINT</li>
+            <li>VOLUME</li>
+            <li>EXPOSE</li>
+	        <li>HEALTHCHECK</li>
+	        <li>STOPSIGNAL</li>
+	      </ul>
+	    </div>
+	  </div>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <h2>RUN vs CMD vs ENTRYPOINT</h2>
+	  <p><strong>RUN</strong> executes command(s) in a new layer and creates a new image. E.g., it is often used for installing software packages.</p>
+	  <p><strong>CMD</strong> sets default command and/or parameters, which can be overwritten from command line when docker container runs.</p>
+	  <p><strong>ENTRYPOINT</strong> configures a container that will run as an executable.</p>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <h2>Dockerfile documentation</h2>
+          <p><a href="https://docs.docker.com/engine/reference/builder"><strong>docs.docker.com/engine/reference/builder</strong></a></p>
+          <p>or google for "Dockerfile reference"</p>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <section data-state="title alt">
+            <h1>Demo Time: <br/>Simple Dockerfile</h1>
+            <aside class="notes">
+            <p>Show Dockerfile from flask-app in labs/beginner</p>
+            </aside>
+          </section>
+          <section data-state="title alt">
+            <h1>Workshop: <br/>First Dockerfile</h1>
+            <aside class="notes">
+            <p>first own container (webapps.md) -> flask app</p>
+            </aside>
+          </section>
+          <section data-state="title alt">
+            <h1>Instructions:</h1>
+	  <p class="fragment fade-up"><strong>1.</strong> Choose baseimage, ex. ubuntu or alpine.</p>
+	  <p class="fragment fade-up"><strong>2.</strong> Install python package manager (pip). On ubuntu package python-pip.</p>
+	  <p class="fragment fade-up"><strong>3.</strong> Upgrade base system if needed.</p>
+	  <p class="fragment fade-up"><strong>4.</strong> Install application dependencies from requirements.txt file.</p>
+	  <p class="fragment fade-up"><strong>5.</strong> Copy application files from app.tgz. Unpack with <br>tar xvf app.tgz</p>
+	  <p class="fragment fade-up"><strong>6.</strong> Inform that application runs on port 5000.</p>
+	  <p class="fragment fade-up"><strong>7.</strong> Write instruction to run application.</p>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <h2>Orchestration</h2>
+	  <p><strong>Docker Compose</strong><br>
+	  Tool for defining and running multi-container Docker applications.<br>
+	  More information: docs.docker.com/compose/overview</p>
+          <p><strong>Ansible</strong><br>
+	  Tool for automating almost everything, including running multi-container applications. Also can run docker-compose.<br>
+	  More information: www.ansible.com/docker</p>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <h2>Docker Swarm</h2>
+            <img src="images/swarm-diagram.png" width="100%" height="100%"/>
+          <aside class="notes">
+          </aside>
+        </section>
+        <section>
+          <h2>Next Steps</h2>
+          <ul>
+             <li><strong>Read about 12factor methodology</strong><br>
+             12factor.net</li>
+	     <li><strong>Join moby community</strong><br>
+             mobyproject.org</li>
+	     <li><strong>Learn about microservices</strong><br>
+	     microservices.io</li>
+	     <li><strong>Google for</strong><br>
+	     Service Discovery, Docker Swarm, Docker secrets etc.</li>
+          </ul>
+          <aside class="notes">
+          </aside>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/lib/js/head.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/js/reveal.js"></script>
+
+    <script>
+      // More info https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        history: true,
+        width: "85%",
+        height: "90%",
+        transition: "fade",
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        // Notes plugin must remain local for now.
+        // See https://github.com/ansible/lightbulb/issues/125
+        dependencies: [
+          { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/plugin/markdown/marked.js' },
+          { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
+</html>

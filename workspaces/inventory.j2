@@ -1,0 +1,5 @@
+{% for item in groups|dictsort %}
+{%   if item.0 != "all" and item.0 != "ungrouped" %}
+{{item.0}} ansible_host={{ item.1.0 | default('0.0.0.0') }}
+{%   endif %}
+{% endfor %}
