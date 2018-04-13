@@ -65,7 +65,7 @@ mark span.hljs-string{
 .reveal h5,
 .reveal h6 {
   margin: 0 0 20px 0;
-  color: #582583;
+  color: #444444;
   font-family: "Open Sans", Impact, sans-serif;
   font-weight: bold;
   letter-spacing: normal;
@@ -396,7 +396,7 @@ div.ans-mark .a-mark{
 
 .cover .slide-background.present,
 .title.alt .slide-background.present{
-  background-color: #582583;
+  background-color: #444444;
   display: block !important;
 }
 
@@ -416,7 +416,7 @@ div.ans-mark .a-mark{
 .title .reveal h2,
 .title .reveal h3,
 .title .reveal h4{
-  color: #582583;
+  color: #444444;
 }
 
 
@@ -562,10 +562,10 @@ div.ans-mark .a-mark{
   }
 }
 */
-div.soi {
+div.logo {
   background-color: transparent;
   position: absolute;
-  width: 6vw; /*vertical-width*/
+  width: 2vw; /*vertical-width*/
   bottom: 0.5em;
   left: 1em;
   z-index: 9999;
